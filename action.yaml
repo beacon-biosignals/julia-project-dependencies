@@ -1,0 +1,20 @@
+# Intended Audience: Beacon Biosignals
+---
+inputs:
+  project:
+    default: "."
+outputs:
+  direct-dependencies:
+    value: ${{ steps.deps.outputs.direct-dependencies }}
+  num-direct-dependencies:
+    value: ${{ steps.deps.outputs.num-direct-dependencie }}
+  unpublished-dependencies:
+    value: ${{ steps.deps.outputs.unpublished-dependencies }}
+  num-unpublished-dependencies:
+    value: ${{ steps.deps.outputs.num-unpublished-dependencies }}
+runs:
+  using: composite
+  steps:
+    - id: deps
+      shell: bash
+      run: julia --color=yes --project="${{ inputs.project }}" "${{ github.action_path }}/dependencies.jl"
