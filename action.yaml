@@ -1,4 +1,5 @@
 ---
+name: Julia Project Dependencies
 description: >-
   Wait for a specific GitHub Actions workflow job to complete. Can be useful for
   synchronization between separate workflows.
