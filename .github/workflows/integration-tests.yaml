@@ -21,9 +21,10 @@ jobs:
         with:
           project: test
       - name: Validate
+        shell: bash
         run: |
           set -x
-          [[ "$direct_dependencies" == "Example\nPkg" ]] || exit 1
+          [[ "$direct_dependencies" == "Example"$'\n'"Pkg" ]] || exit 1
           [[ "$num_direct_dependencies" -eq 2 ]] || exit 1
           [[ "$unpublished_dependencies" == "Example" ]] || exit 1
           [[ "$num_unpublished_dependencies" -eq 1 ]] || exit 1
