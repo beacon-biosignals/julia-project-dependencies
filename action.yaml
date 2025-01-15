@@ -1,16 +1,31 @@
-# Intended Audience: Beacon Biosignals
 ---
+description: >-
+  Wait for a specific GitHub Actions workflow job to complete. Can be useful for
+  synchronization between separate workflows.
+branding:
+  color: blue
+  icon: archive
 inputs:
   project:
+    description: The Julia project directory.
     default: "."
 outputs:
   direct-dependencies:
+    description: >-
+      List of newline separated Julia package names which this project defines under the
+      `deps` section of the `Project.toml`.
     value: ${{ steps.deps.outputs.direct-dependencies }}
   num-direct-dependencies:
+    description: >-
+      Number of Julia packages listed under the `deps` section of the `Project.toml`.
     value: ${{ steps.deps.outputs.num-direct-dependencie }}
   unpublished-dependencies:
+    description: >-
+      List of newline separated Julia package names used by this project which are not published.
     value: ${{ steps.deps.outputs.unpublished-dependencies }}
   num-unpublished-dependencies:
+    description: >-
+      Number of Julia packages used by this project which are not published.
     value: ${{ steps.deps.outputs.num-unpublished-dependencies }}
 runs:
   using: composite
