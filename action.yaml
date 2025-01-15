@@ -19,7 +19,7 @@ outputs:
   num-direct-dependencies:
     description: >-
       Number of Julia packages listed under the `deps` section of the `Project.toml`.
-    value: ${{ steps.deps.outputs.num-direct-dependencie }}
+    value: ${{ steps.deps.outputs.num-direct-dependencies }}
   unpublished-dependencies:
     description: >-
       List of newline separated Julia package names used by this project which are not published.
