@@ -2,6 +2,10 @@
 
 using Pkg
 
+# When generating a GitHub action heredoc we'll use a string that should never be the name
+# of a Julia package. Additionally, `@` is not allowed in a GitHub repository names.
+const PKG_NAME_DELIMITER = "@EOF"
+
 function github_output((k, v)::Pair; delimiter::Union{AbstractString,Nothing}=nothing)
     k = string(k)
     v = string(v)
@@ -49,9 +53,11 @@ else
 end
 
 if haskey(ENV, "GITHUB_OUTPUT")
-    github_output("direct-dependencies" => join(direct_dep_names, '\n'); delimiter="EOF")
+
+    github_output("direct-dependencies" => join(direct_dep_names, '\n');
+                  delimiter=PKG_NAME_DELIMITER)
     github_output("num-direct-dependencies" => length(direct_dep_names))
     github_output("unpublished-dependencies" => join(unpublished_dep_names, '\n');
-                  delimiter="EOF")
+                  delimiter=PKG_NAME_DELIMITER)
     github_output("num-unpublished-dependencies" => length(unpublished_dep_names))
 end
