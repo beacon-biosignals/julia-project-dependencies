@@ -1,0 +1,35 @@
+---
+name: Integration Tests
+on:
+  pull_request:
+    paths:
+      - "action.yaml"
+      - ".github/workflows/integration-tests.yaml"
+
+jobs:
+  test:
+    name: Test
+    # These permissions are needed to:
+    # - Checkout the repo
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./
+        id: julia-project-dependencies
+        with:
+          project: test
+      - name: Validate
+        shell: bash
+        run: |
+          set -x
+          [[ "$direct_dependencies" == "Example"$'\n'"Pkg" ]] || exit 1
+          [[ "$num_direct_dependencies" -eq 2 ]] || exit 1
+          [[ "$unpublished_dependencies" == "Example" ]] || exit 1
+          [[ "$num_unpublished_dependencies" -eq 1 ]] || exit 1
+        env:
+          direct_dependencies: ${{ steps.julia-project-dependencies.outputs.direct-dependencies }}
+          num_direct_dependencies: ${{ steps.julia-project-dependencies.outputs.num-direct-dependencies }}
+          unpublished_dependencies: ${{ steps.julia-project-dependencies.outputs.unpublished-dependencies }}
+          num_unpublished_dependencies: ${{ steps.julia-project-dependencies.outputs.num-unpublished-dependencies }}
