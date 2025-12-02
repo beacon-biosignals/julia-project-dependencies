@@ -4,12 +4,14 @@ on:
   pull_request:
     paths:
       - "action.yaml"
+      - "dependencies.jl"
       - ".github/workflows/integration-tests.yaml"
   push:
     branches: ["main"]
     tags: ["*"]
     paths:
       - "action.yaml"
+      - "dependencies.jl"
       - ".github/workflows/integration-tests.yaml"
 
 jobs:
