@@ -16,23 +16,30 @@ on:
 
 jobs:
   test:
-    name: Test
+    name: Test - Julia ${{ matrix.version }}
     # These permissions are needed to:
     # - Checkout the repo
     permissions:
       contents: read
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        version:
+          - "1.10"
+          - "1.11"
+          - "1.12"
+          - "nightly"
     steps:
       - uses: actions/checkout@v5
-      - name: Julia version
+      - name: Show Julia version
         shell: bash
         run: |
-          command -v julia
           julia -e 'println(VERSION)'
       - name: Set up Julia
         uses: julia-actions/setup-julia@v2
         with:
-          version: "1.11"
+          version: ${{ matrix.version }}
       - uses: ./
         id: julia-project-dependencies
         with:
