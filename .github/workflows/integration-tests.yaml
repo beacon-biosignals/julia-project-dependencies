@@ -32,10 +32,6 @@ jobs:
           - "nightly"
     steps:
       - uses: actions/checkout@v5
-      - name: Show Julia version
-        shell: bash
-        run: |
-          julia -e 'println(VERSION)'
       - name: Set up Julia
         uses: julia-actions/setup-julia@v2
         with:
