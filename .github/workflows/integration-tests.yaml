@@ -27,7 +27,12 @@ jobs:
       - name: Julia version
         shell: bash
         run: |
-          julia -E VERSION
+          command -v julia
+          julia -e 'println(VERSION)'
+      - name: Set up Julia
+        uses: julia-actions/setup-julia@v2
+        with:
+          version: "1.11"
       - uses: ./
         id: julia-project-dependencies
         with:
