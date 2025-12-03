@@ -1,6 +1,9 @@
 #!/usr/bin/env -S julia
 
-using Pkg
+using Pkg: Pkg, Operations
+using Pkg.API: EnvCache, PackageInfo
+using Pkg.Types: PackageEntry, VersionSpec
+using UUIDs: UUID
 
 # When generating a GitHub action heredoc we'll use a string that should never be the name
 # of a Julia package. Additionally, `@` is not allowed in a GitHub repository names.
@@ -22,9 +25,40 @@ function github_output((k, v)::Pair; delimiter::Union{AbstractString,Nothing}=no
     end
 end
 
+# Construct a `PackageInfo` from a `PackageEntry` instead of a `PackageSpec`. We skip the
+# steps which determine the `git_source` and `source` as these checks can require the
+# dependency source to be available locally which can fail when the Julia manifest version
+# and the running Julia version differ.
+#
+# Adapted from: https://github.com/JuliaLang/Pkg.jl/blob/89a1629d0b0555e9c218b4248e18436b7aca0e70/src/API.jl#L64-L85
+function package_info(env::EnvCache, pkg::PackageEntry)::PackageInfo
+    info = PackageInfo(
+        name = pkg.name,
+        version = pkg.version != VersionSpec() ? pkg.version : nothing,
+        tree_hash = nothing,
+        is_direct_dep = pkg.uuid in values(env.project.deps),
+        is_pinned = pkg.pinned,
+        is_tracking_path = pkg.path !== nothing,
+        is_tracking_repo = pkg.repo.rev !== nothing || pkg.repo.source !== nothing,
+        is_tracking_registry = Operations.is_tracking_registry(pkg),
+        git_revision = nothing,
+        git_source = nothing,
+        source = "",
+        dependencies = Dict{String,UUID}()
+    )
+    return info
+end
+
+# Alternative to `Pkg.dependencies()` which allows newer versions of Julia to work with
+# older manifests where the dependency source may not be present
+function dependencies()
+    env = EnvCache()
+    return Dict(pkg_id::UUID => package_info(env, pkg_entry) for (pkg_id, pkg_entry) in env.manifest.deps)
+end
+
 project = Pkg.project()
 
-deps = Pkg.dependencies()
+deps = dependencies()
 direct_deps = filter(((id, pkg),) -> pkg.is_direct_dep, deps)
 unpublished_deps = filter(((id, pkg),) -> !pkg.is_tracking_registry, direct_deps)
 
