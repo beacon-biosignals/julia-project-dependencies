@@ -25,6 +25,11 @@ function github_output((k, v)::Pair; delimiter::Union{AbstractString,Nothing}=no
     end
 end
 
+# Construct a `PackageInfo` from a `PackageEntry` instead of a `PackageSpec`. We skip the
+# steps which determine the `git_source` and `source` as these checks can require the
+# dependency source to be available locally which can fail when the Julia manifest version
+# and the running Julia version differ.
+#
 # Adapted from: https://github.com/JuliaLang/Pkg.jl/blob/89a1629d0b0555e9c218b4248e18436b7aca0e70/src/API.jl#L64-L85
 function package_info(env::EnvCache, pkg::PackageEntry)::PackageInfo
     info = PackageInfo(
