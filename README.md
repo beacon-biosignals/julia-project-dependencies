@@ -11,7 +11,7 @@ jobs:
     permissions: {}
     runs-on: ubuntu-latest
     steps:
-      - uses: julia-actions/setup-julia
+      - uses: julia-actions/setup-julia@v2
         with:
           version: "1.10"
       - uses: beacon-biosignals/julia-project-dependencies@v1
