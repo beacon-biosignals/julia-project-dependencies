@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: julia-actions/setup-julia@v2
         with:
-          version: "1.10"
+          version: "lts"
       - uses: beacon-biosignals/julia-project-dependencies@v1
         id: deps
       - name: Fail if unpublished dependencies
